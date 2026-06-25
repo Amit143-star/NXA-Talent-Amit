@@ -1,0 +1,64 @@
+/* --- GLOBAL STYLING OVERRIDES --- */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #0B2E59;
+  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+  overflow: hidden;
+}
+
+/* --- SCROLLBAR PURGE --- */
+::-webkit-scrollbar {
+  width: 0px !important;
+  height: 0px !important;
+}
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* --- CUSTOM ANIMATIONS --- */
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+
+@keyframes bootFlow {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(330%); }
+}
+
+@keyframes scanline_career {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+
+@keyframes rotateBg {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cardManifest {
+  from { opacity: 0; transform: scale(0.9) translateY(30px); filter: blur(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+
+/* --- PRINT RULES (CERTIFICATES) --- */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-area {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

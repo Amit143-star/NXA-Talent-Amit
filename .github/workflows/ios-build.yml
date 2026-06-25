@@ -1,0 +1,63 @@
+name: Manifest Industrial iOS App
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Industrial iOS Build (Unsigned/Free)
+    runs-on: macos-latest
+
+    steps:
+      - name: Synchronize Matrix
+        uses: actions/checkout@v4
+
+      - name: Setup Node Core
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          npm install
+
+      - name: Build Web App
+        run: |
+          npm run build
+
+      - name: Synchronize iOS Platform
+        run: |
+          npx cap sync ios
+
+      - name: Install CocoaPods Dependencies
+        run: |
+          cd ios/App
+          pod install
+
+      - name: Build Unsigned iOS App
+        run: |
+          cd ios/App
+          xcodebuild build \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_IDENTITY=""
+
+      - name: Package Unsigned IPA for Sideloading
+        run: |
+          cd ios/App/build/Build/Products/Release-iphoneos
+          mkdir Payload
+          cp -r App.app Payload/
+          zip -qr NXA_Talent_Unsigned.ipa Payload
+
+      - name: Upload Unsigned IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NXA_Talent_Portal_Unsigned_IPA
+          path: ios/App/build/Build/Products/Release-iphoneos/NXA_Talent_Unsigned.ipa

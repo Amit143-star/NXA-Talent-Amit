@@ -1,0 +1,6 @@
+{
+  "appId": "com.nxatalent.app",
+  "appName": "NXA Talent Portal",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

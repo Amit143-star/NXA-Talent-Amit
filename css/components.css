@@ -1,0 +1,100 @@
+/* Navigation */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 12, 0.8);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.logo .nx { color: var(--accent-primary); }
+.logo .talent { color: white; font-weight: 300; }
+
+.nav-links { display: flex; gap: 2.5rem; }
+.nav-item {
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.nav-item.active, .nav-item:hover {
+    color: var(--accent-primary);
+}
+
+/* User Meta */
+.user-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-display {
+    text-align: right;
+}
+
+.user-display .name {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.user-display .status {
+    font-size: 0.6rem;
+    color: var(--accent-primary);
+    letter-spacing: 1px;
+}
+
+/* Base Components */
+.section { padding: 100px 2rem; max-width: 1400px; margin: 0 auto; }
+
+.glitch-text {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.btn-primary-lg {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    border: none;
+    padding: 1.25rem 3rem;
+    font-weight: 700;
+    cursor: pointer;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+    font-family: var(--font-heading);
+}
+
+.btn-logout {
+    background: rgba(255, 69, 69, 0.1);
+    color: #ff4545;
+    border: 1px solid rgba(255, 69, 69, 0.2);
+    padding: 8px 16px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NXA Talent</string>
+    <string name="title_activity_main">NXA Talent</string>
+    <string name="package_name">com.nxatalent.app</string>
+    <string name="custom_url_scheme">com.nxatalent.app</string>
+</resources>
