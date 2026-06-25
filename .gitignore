@@ -7,3 +7,7 @@ capacitor.config.json.bak
 .DS_Store
 *.apk
 *.zip
+gh_cli/
+ios_private.key
+request.csr
+brain/
