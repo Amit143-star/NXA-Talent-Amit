@@ -1,7 +1,13 @@
 /* --- GLOBAL STYLING OVERRIDES --- */
 :root {
-  --sat: env(safe-area-inset-top, 47px);
+  --sat: 0px;
   --sab: env(safe-area-inset-bottom, 20px);
+}
+
+@supports (-webkit-touch-callout: none) {
+  :root {
+    --sat: max(env(safe-area-inset-top), 50px);
+  }
 }
 
 body {
