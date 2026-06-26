@@ -464,7 +464,7 @@ export default function App() {
       
       {/* Top Mobile Bar */}
       {!isDesktop && (
-        <AppBar position="fixed" sx={{ background: darkMode ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.9)', backdropFilter: 'blur(20px)', borderBottom: darkMode ? '1px solid rgba(247, 147, 30, 0.15)' : '1px solid rgba(11, 46, 89, 0.08)', boxShadow: 'none', zIndex: 1100 }}>
+        <AppBar position="fixed" sx={{ background: darkMode ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.9)', backdropFilter: 'blur(20px)', borderBottom: darkMode ? '1px solid rgba(247, 147, 30, 0.15)' : '1px solid rgba(11, 46, 89, 0.08)', boxShadow: 'none', zIndex: 1100, pt: 'env(safe-area-inset-top)' }}>
           <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: darkMode ? '#F7931E' : '#0B2E59', mr: 1 }}>
@@ -528,8 +528,8 @@ export default function App() {
         sx={{ 
           flexGrow: 1, 
           width: { lg: 'calc(100% - 290px)' }, 
-          pt: { xs: '75px', lg: 0 }, 
-          height: { xs: 'calc(100vh - 75px)', lg: '100vh' },
+          pt: { xs: 'calc(75px + env(safe-area-inset-top))', lg: 0 }, 
+          height: { xs: 'calc(100vh - 75px - env(safe-area-inset-top))', lg: '100vh' },
           overflowY: 'auto',
           background: darkMode ? '#080d16' : '#ffffff'
         }}
@@ -544,7 +544,7 @@ export default function App() {
           value={view === 'register' ? 'self' : view}
           onChange={(event, newValue) => setView(newValue)}
           sx={{
-            position: 'fixed', bottom: 15, left: '50%', transform: 'translateX(-50%)',
+            position: 'fixed', bottom: 'calc(15px + env(safe-area-inset-bottom))', left: '50%', transform: 'translateX(-50%)',
             width: '94%', maxWidth: '440px', borderRadius: '24px', 
             border: darkMode ? '1px solid rgba(247, 147, 30, 0.2)' : '1px solid rgba(11, 46, 89, 0.08)',
             background: darkMode ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.95)', 
