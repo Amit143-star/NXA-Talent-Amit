@@ -46,6 +46,7 @@ import AdminManagement from './views/AdminManagement';
 export default function App() {
   const muiTheme = useTheme();
   const isDesktop = useMediaQuery(muiTheme.breakpoints.up('lg'));
+  const isIOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
   
   // App Global State
   const [user, setUser] = useState(null);
@@ -464,7 +465,8 @@ export default function App() {
       
       {/* Top Mobile Bar */}
       {!isDesktop && (
-        <AppBar position="fixed" sx={{ background: darkMode ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.9)', backdropFilter: 'blur(20px)', borderBottom: darkMode ? '1px solid rgba(247, 147, 30, 0.15)' : '1px solid rgba(11, 46, 89, 0.08)', boxShadow: 'none', zIndex: 1100, pt: 'env(safe-area-inset-top)' }}>
+        <AppBar position="fixed" sx={{ background: darkMode ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.9)', backdropFilter: 'blur(20px)', borderBottom: darkMode ? '1px solid rgba(247, 147, 30, 0.15)' : '1px solid rgba(11, 46, 89, 0.08)', boxShadow: 'none', zIndex: 1100 }}>
+          {isIOS && <Box sx={{ height: 'var(--sat)', width: '100%' }} />}
           <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: darkMode ? '#F7931E' : '#0B2E59', mr: 1 }}>
@@ -528,8 +530,8 @@ export default function App() {
         sx={{ 
           flexGrow: 1, 
           width: { lg: 'calc(100% - 290px)' }, 
-          pt: { xs: 'calc(75px + env(safe-area-inset-top))', lg: 0 }, 
-          height: { xs: 'calc(100vh - 75px - env(safe-area-inset-top))', lg: '100vh' },
+          pt: { xs: isIOS ? 'calc(75px + var(--sat))' : '75px', lg: 0 }, 
+          height: { xs: isIOS ? 'calc(100vh - 75px - var(--sat))' : 'calc(100vh - 75px)', lg: '100vh' },
           overflowY: 'auto',
           background: darkMode ? '#080d16' : '#ffffff'
         }}

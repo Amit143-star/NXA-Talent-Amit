@@ -1,4 +1,9 @@
 /* --- GLOBAL STYLING OVERRIDES --- */
+:root {
+  --sat: env(safe-area-inset-top, 47px);
+  --sab: env(safe-area-inset-bottom, 20px);
+}
+
 body {
   margin: 0;
   padding: 0;
