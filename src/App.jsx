@@ -277,13 +277,21 @@ export default function App() {
       ];
     } else {
       if (roleType === 'super') {
+        // Super Admin: HEAD OF ALL — full access to every system module
         return [
-          { text: 'Home', view: 'home', icon: <HomeIcon /> },
-          { text: 'Student Profiles', view: 'student_mgmt', icon: <AnalyticsIcon /> },
+          { text: 'Command Center', view: 'home', icon: <HomeIcon /> },
           { text: 'Manage Admins', view: 'admin_mgmt', icon: <SettingsIcon /> },
+          { text: 'Student Profiles', view: 'student_mgmt', icon: <AnalyticsIcon /> },
+          { text: 'Attendance', view: 'attendance', icon: <CalendarMonthIcon /> },
+          { text: 'Broadcast Signals', view: 'notifications', icon: <NotificationsIcon /> },
+          { text: 'Course Matrix', view: 'courses', icon: <SchoolIcon /> },
+          { text: 'Live Stream', view: 'live', icon: <LiveTvIcon /> },
+          { text: 'Project Matrix', view: 'projects', icon: <FolderIcon /> },
+          { text: 'Internship Hub', view: 'internships', icon: <WorkIcon /> },
           { text: 'Leaderboard', view: 'leaderboard', icon: <EmojiEventsIcon /> },
         ];
       } else if (roleType === 'max') {
+        // Max Admin: Course Matrix, Live Stream Control, Project Matrix, Leaderboard ONLY
         return [
           { text: 'Home', view: 'home', icon: <HomeIcon /> },
           { text: 'Course Matrix', view: 'courses', icon: <SchoolIcon /> },
@@ -292,13 +300,13 @@ export default function App() {
           { text: 'Leaderboard', view: 'leaderboard', icon: <EmojiEventsIcon /> },
         ];
       } else {
-        // center admin flow
+        // Center Admin: Student Profile, Attendance, Broadcast Signals, Internship Hub, Leaderboard ONLY
         return [
           { text: 'Home', view: 'home', icon: <HomeIcon /> },
           { text: 'Student Profiles', view: 'student_mgmt', icon: <AnalyticsIcon /> },
           { text: 'Attendance', view: 'attendance', icon: <CalendarMonthIcon /> },
           { text: 'Broadcast Signals', view: 'notifications', icon: <NotificationsIcon /> },
-          { text: 'Internship Hubs', view: 'internships', icon: <WorkIcon /> },
+          { text: 'Internship Hub', view: 'internships', icon: <WorkIcon /> },
           { text: 'Leaderboard', view: 'leaderboard', icon: <EmojiEventsIcon /> },
         ];
       }
@@ -318,12 +326,15 @@ export default function App() {
     // Scoped Navigation Security Route Protection
     if (role === 'admin') {
       if (roleType === 'super') {
-        const allowed = ['home', 'student_mgmt', 'admin_mgmt', 'leaderboard'];
+        // Super Admin has FULL access to everything
+        const allowed = ['home', 'student_mgmt', 'admin_mgmt', 'leaderboard', 'attendance', 'notifications', 'courses', 'course_admin', 'live', 'projects', 'internships'];
         if (!allowed.includes(view)) return <Home state={stateObj} setView={setView} />;
       } else if (roleType === 'max') {
+        // Max Admin: ONLY courses, live, projects, leaderboard
         const allowed = ['home', 'courses', 'course_admin', 'live', 'projects', 'leaderboard'];
         if (!allowed.includes(view)) return <Home state={stateObj} setView={setView} />;
       } else if (roleType === 'center') {
+        // Center Admin: ONLY student profiles, attendance, notifications, internships, leaderboard
         const allowed = ['home', 'student_mgmt', 'attendance', 'notifications', 'internships', 'leaderboard'];
         if (!allowed.includes(view)) return <Home state={stateObj} setView={setView} />;
       }
