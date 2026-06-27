@@ -54,9 +54,9 @@ export default function Notifications({ state }) {
     setCustomAlerts(updated);
     localStorage.setItem('nxa_system_alerts', JSON.stringify(updated));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        await firebase.firestore().collection('broadcasts').doc(newAlert.id).set(newAlert);
+        await window.firebase.firestore().collection('broadcasts').doc(newAlert.id).set(newAlert);
       } catch(err) {
         console.warn(err);
       }

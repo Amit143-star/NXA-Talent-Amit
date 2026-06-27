@@ -101,10 +101,10 @@ export default function Courses({ state, setView }) {
     localStorage.setItem('nxa_student_profiles', JSON.stringify(updatedProfiles));
 
     // Write to Firebase if present
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('payment_logs').doc('utr_' + utrId.trim()).set(logEntry);
-        firebase.firestore().collection('profiles').doc(state.user.email.toLowerCase().trim()).set(updatedProfile, { merge: true });
+        window.firebase.firestore().collection('payment_logs').doc('utr_' + utrId.trim()).set(logEntry);
+        window.firebase.firestore().collection('profiles').doc(state.user.email.toLowerCase().trim()).set(updatedProfile, { merge: true });
       } catch(e) {
         console.warn(e);
       }

@@ -122,8 +122,8 @@ export default function StudentManagement({ state, setView }) {
 
     logAudit(`Toggled payment status for ${email} to ${newStatus}`);
     
-    if (typeof firebase !== 'undefined') {
-      firebase.firestore().collection('profiles').doc(emailKey).update({ payment_status: newStatus }).catch(console.warn);
+    if (typeof window.firebase !== 'undefined') {
+      window.firebase.firestore().collection('profiles').doc(emailKey).update({ payment_status: newStatus }).catch(console.warn);
     }
   };
 
@@ -169,9 +169,9 @@ export default function StudentManagement({ state, setView }) {
 
     logAudit(`Added student profile for ${addEmail}`);
 
-    if (typeof firebase !== 'undefined') {
-      firebase.firestore().collection('users').doc(emailKey).set(newUser).catch(console.warn);
-      firebase.firestore().collection('profiles').doc(emailKey).set(newProfile).catch(console.warn);
+    if (typeof window.firebase !== 'undefined') {
+      window.firebase.firestore().collection('users').doc(emailKey).set(newUser).catch(console.warn);
+      window.firebase.firestore().collection('profiles').doc(emailKey).set(newProfile).catch(console.warn);
     }
 
     alert("STUDENT PROFILE CREATED: Core records initialized.");
@@ -228,8 +228,8 @@ export default function StudentManagement({ state, setView }) {
 
     logAudit(`Edited student profile for ${selectedStudent.email}`);
 
-    if (typeof firebase !== 'undefined') {
-      firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true }).catch(console.warn);
+    if (typeof window.firebase !== 'undefined') {
+      window.firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true }).catch(console.warn);
     }
 
     alert("STUDENT DOSSIER SAVED: Update broadcasted to core sync.");
@@ -255,9 +255,9 @@ export default function StudentManagement({ state, setView }) {
 
     logAudit(`Deleted student profile for ${email}`);
 
-    if (typeof firebase !== 'undefined') {
-      firebase.firestore().collection('profiles').doc(emailKey).delete().catch(console.warn);
-      firebase.firestore().collection('users').doc(emailKey).delete().catch(console.warn);
+    if (typeof window.firebase !== 'undefined') {
+      window.firebase.firestore().collection('profiles').doc(emailKey).delete().catch(console.warn);
+      window.firebase.firestore().collection('users').doc(emailKey).delete().catch(console.warn);
     }
 
     alert("RECORD DELETED: Student references purged.");

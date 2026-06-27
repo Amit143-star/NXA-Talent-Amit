@@ -84,9 +84,9 @@ export default function CourseAdmin({ state, setView }) {
     setCourses(updated);
     localStorage.setItem('nxa_system_courses', JSON.stringify(updated));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('courses').doc(newC.id).set(newC);
+        window.firebase.firestore().collection('courses').doc(newC.id).set(newC);
       } catch(e) {
         console.warn(e);
       }
@@ -106,9 +106,9 @@ export default function CourseAdmin({ state, setView }) {
     setCourses(updated);
     localStorage.setItem('nxa_system_courses', JSON.stringify(updated));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('courses').doc(id).delete();
+        window.firebase.firestore().collection('courses').doc(id).delete();
       } catch(e) {
         console.warn(e);
       }
@@ -170,9 +170,9 @@ export default function CourseAdmin({ state, setView }) {
     setCourses(updatedList);
     localStorage.setItem('nxa_system_courses', JSON.stringify(updatedList));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('courses').doc(updatedCourse.id).set(updatedCourse);
+        window.firebase.firestore().collection('courses').doc(updatedCourse.id).set(updatedCourse);
       } catch(e) {
         console.warn(e);
       }
@@ -195,9 +195,9 @@ export default function CourseAdmin({ state, setView }) {
     setProfiles(updatedProfiles);
     localStorage.setItem('nxa_student_profiles', JSON.stringify(updatedProfiles));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true });
+        window.firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true });
       } catch(e) {
         console.warn(e);
       }
@@ -231,10 +231,10 @@ export default function CourseAdmin({ state, setView }) {
     setPayLogs(updatedLogs);
     localStorage.setItem('nxa_payment_logs', JSON.stringify(updatedLogs));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true });
-        firebase.firestore().collection('payment_logs').doc('utr_' + log.utr).set(updatedLogs[idx]);
+        window.firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true });
+        window.firebase.firestore().collection('payment_logs').doc('utr_' + log.utr).set(updatedLogs[idx]);
       } catch(e) {
         console.warn(e);
       }

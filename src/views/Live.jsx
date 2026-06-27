@@ -80,9 +80,9 @@ export default function Live({ state }) {
     setLiveData(updated);
     syncPush('nxa_live_broadcast', updated);
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('config').doc('live_broadcast').set(updated);
+        window.firebase.firestore().collection('config').doc('live_broadcast').set(updated);
       } catch(e) {
         console.warn(e);
       }
@@ -97,9 +97,9 @@ export default function Live({ state }) {
     setTopic('');
     setLink('');
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('config').doc('live_broadcast').set(updated);
+        window.firebase.firestore().collection('config').doc('live_broadcast').set(updated);
       } catch(e) {
         console.warn(e);
       }

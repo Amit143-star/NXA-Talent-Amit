@@ -56,10 +56,10 @@ export default function Login({ onLogin }) {
         localStorage.setItem('nxa_student_profiles', JSON.stringify(profiles));
 
         // Initialize session in Firebase
-        if (typeof firebase !== 'undefined') {
+        if (typeof window.firebase !== 'undefined') {
           try {
-            await firebase.firestore().collection('users').doc(emailKey).set(newUser);
-            await firebase.firestore().collection('profiles').doc(emailKey).set(profiles[emailKey]);
+            await window.firebase.firestore().collection('users').doc(emailKey).set(newUser);
+            await window.firebase.firestore().collection('profiles').doc(emailKey).set(profiles[emailKey]);
           } catch(err) {
             console.warn("Firebase Sync Failed during signup:", err);
           }

@@ -46,9 +46,9 @@ export default function Projects({ state }) {
     localStorage.setItem('nxa_industrial_projects', JSON.stringify(updatedProjects));
 
     // Firebase write if present
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        await firebase.firestore().collection('projects').doc(newProj.title.toLowerCase().replace(/\s+/g, '_')).set(newProj);
+        await window.firebase.firestore().collection('projects').doc(newProj.title.toLowerCase().replace(/\s+/g, '_')).set(newProj);
       } catch(e) {
         console.warn(e);
       }
@@ -71,9 +71,9 @@ export default function Projects({ state }) {
     localStorage.setItem('nxa_industrial_projects', JSON.stringify(updatedProjects));
 
     // Firebase delete if present
-    if (typeof firebase !== 'undefined' && targetProj) {
+    if (typeof window.firebase !== 'undefined' && targetProj) {
       try {
-        await firebase.firestore().collection('projects').doc(targetProj.title.toLowerCase().replace(/\s+/g, '_')).delete();
+        await window.firebase.firestore().collection('projects').doc(targetProj.title.toLowerCase().replace(/\s+/g, '_')).delete();
       } catch(e) {
         console.warn(e);
       }

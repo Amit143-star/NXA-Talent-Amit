@@ -133,9 +133,9 @@ export default function Dossier({ state, setView }) {
     setProfiles(newProfiles);
     localStorage.setItem('nxa_student_profiles', JSON.stringify(newProfiles));
     
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        await firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile);
+        await window.firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile);
       } catch(err) {
         console.warn("Firestore sync failed:", err);
       }
@@ -174,8 +174,8 @@ export default function Dossier({ state, setView }) {
         setProfiles(newProfiles);
         localStorage.setItem('nxa_student_profiles', JSON.stringify(newProfiles));
         
-        if (typeof firebase !== 'undefined') {
-          firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true }).catch(err => {
+        if (typeof window.firebase !== 'undefined') {
+          window.firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfile, { merge: true }).catch(err => {
             console.warn("Firestore photo sync failed:", err);
           });
         }

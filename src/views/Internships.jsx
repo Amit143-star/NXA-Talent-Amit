@@ -86,9 +86,9 @@ export default function Internships({ state, setView }) {
     setInternships(updated);
     localStorage.setItem('nxa_internship_matrix', JSON.stringify(updated));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        await firebase.firestore().collection('internships').doc(newInt.id).set(newInt);
+        await window.firebase.firestore().collection('internships').doc(newInt.id).set(newInt);
       } catch(e) {
         console.warn(e);
       }
@@ -109,9 +109,9 @@ export default function Internships({ state, setView }) {
     setInternships(updated);
     localStorage.setItem('nxa_internship_matrix', JSON.stringify(updated));
 
-    if (typeof firebase !== 'undefined' && target) {
+    if (typeof window.firebase !== 'undefined' && target) {
       try {
-        await firebase.firestore().collection('internships').doc(target.id).delete();
+        await window.firebase.firestore().collection('internships').doc(target.id).delete();
       } catch(e) {
         console.warn(e);
       }

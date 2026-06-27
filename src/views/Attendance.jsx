@@ -144,9 +144,9 @@ export default function Attendance({ state }) {
     }
 
     // Sync to Firebase if loaded
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfiles[emailKey], { merge: true });
+        window.firebase.firestore().collection('profiles').doc(emailKey).set(updatedProfiles[emailKey], { merge: true });
       } catch(e) {
         console.warn(e);
       }
@@ -158,9 +158,9 @@ export default function Attendance({ state }) {
     setSession(newSession);
     localStorage.setItem('nxa_attendance_session', JSON.stringify(newSession));
     
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('config').doc('attendance_session').set(newSession);
+        window.firebase.firestore().collection('config').doc('attendance_session').set(newSession);
       } catch(e) {
         console.warn(e);
       }
@@ -172,9 +172,9 @@ export default function Attendance({ state }) {
     setSession(stoppedSession);
     localStorage.setItem('nxa_attendance_session', JSON.stringify(stoppedSession));
 
-    if (typeof firebase !== 'undefined') {
+    if (typeof window.firebase !== 'undefined') {
       try {
-        firebase.firestore().collection('config').doc('attendance_session').set(stoppedSession);
+        window.firebase.firestore().collection('config').doc('attendance_session').set(stoppedSession);
       } catch(e) {
         console.warn(e);
       }
