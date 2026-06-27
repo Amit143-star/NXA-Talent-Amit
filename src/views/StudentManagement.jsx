@@ -17,6 +17,7 @@ export default function StudentManagement({ state, setView }) {
   // CRUD States
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDossierDialog, setOpenDossierDialog] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   // Add student form states
@@ -76,15 +77,12 @@ export default function StudentManagement({ state, setView }) {
   const pending = users.filter(u => u && u.email && !profileEmails.includes(String(u.email).toLowerCase()));
 
   // Analytics
-  const validCgpas = students.map(s => parseFloat(s.cgpa || s.ug_marks)).filter(v => !isNaN(v) && v > 0);
-  const avgCgpa = validCgpas.length > 0 ? (validCgpas.reduce((acc, curr) => acc + curr, 0) / validCgpas.length).toFixed(2) : "0.00";
-
-  let payLogs = [];
-  try { payLogs = JSON.parse(localStorage.getItem('nxa_payment_logs')) || []; } catch(e) {}
-  const totalRev = payLogs.filter(log => log.status === 'verified').reduce((acc, curr) => acc + (parseFloat(curr.price) || 0), 0);
-
   const studentAtts = students.map(s => s.attendance ? Object.values(s.attendance).filter(Boolean).length : 0);
   const avgAtt = studentAtts.length > 0 ? Math.round(studentAtts.reduce((acc, curr) => acc + curr, 0) / studentAtts.length) : 0;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayPresent = students.filter(s => s.attendance && s.attendance[todayStr]).length;
+  const todayAbsent = students.length - todayPresent;
 
   const filteredStudents = students.filter(s => {
     const q = searchQuery.toLowerCase();
@@ -181,6 +179,12 @@ export default function StudentManagement({ state, setView }) {
     setAddEmail('');
     setAddPass('');
     setAddUsn('');
+  };
+
+  // CRUD: Open Dossier
+  const handleOpenDossier = (student) => {
+    setSelectedStudent(student);
+    setOpenDossierDialog(true);
   };
 
   // CRUD: Edit Student Dialog Trigger
@@ -330,17 +334,15 @@ export default function StudentManagement({ state, setView }) {
           <Card sx={{ background: themeCardBg, border: `1px solid ${themeBorderColor}`, borderRadius: '20px', boxShadow: 'none' }}>
             <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="caption" sx={{ color: themeTextSec, fontWeight: 950, fontSize: '0.65rem', mb: 1, letterSpacing: '1px' }}>
-                AVERAGE CGPA CURVE
+                PRESENT TODAY
               </Typography>
-              <Typography variant="h5" sx={{ fontWeight: 900, color: themeTextColor }}>
-                {avgCgpa}
+              <Typography variant="h5" sx={{ fontWeight: 900, color: '#10b981' }}>
+                {todayPresent}
               </Typography>
-              <Box sx={{ width: '100%', height: 40, mt: 1.5 }}>
-                <svg width="100%" height="40" viewBox="0 0 120 40">
-                  <path d="M 10 35 Q 60 5 110 35" fill="none" stroke="rgba(100,116,139,0.3)" strokeWidth="1.5" />
-                  <path d="M 10 35 Q 60 5 80 18" fill="none" stroke={isDark ? '#F7931E' : '#0B2E59'} strokeWidth="2.5" />
-                  <circle cx="80" cy="18" r="4.5" fill={isDark ? '#F7931E' : '#0B2E59'} />
-                </svg>
+              <Box sx={{ width: '100%', height: 40, mt: 1.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', height: 8, background: 'rgba(16, 185, 129, 0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+                  <Box sx={{ width: `${students.length ? (todayPresent / students.length) * 100 : 0}%`, height: '100%', background: '#10b981', borderRadius: '4px' }} />
+                </Box>
               </Box>
             </CardContent>
           </Card>
@@ -350,15 +352,15 @@ export default function StudentManagement({ state, setView }) {
           <Card sx={{ background: themeCardBg, border: `1px solid ${themeBorderColor}`, borderRadius: '20px', boxShadow: 'none' }}>
             <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="caption" sx={{ color: themeTextSec, fontWeight: 950, fontSize: '0.65rem', mb: 1, letterSpacing: '1px' }}>
-                LEDGER VOLUME
+                ABSENT TODAY
               </Typography>
-              <Typography variant="h5" sx={{ fontWeight: 900, color: '#10b981' }}>
-                ₹{totalRev}
+              <Typography variant="h5" sx={{ fontWeight: 900, color: '#ff4545' }}>
+                {todayAbsent}
               </Typography>
-              <Box sx={{ width: '100%', height: 40, mt: 1.5, display: 'flex', justifyContent: 'center', gap: 1 }}>
-                <Box sx={{ width: 12, height: 15, bgcolor: '#10b981', alignSelf: 'flex-end', borderRadius: '2px 2px 0 0' }} />
-                <Box sx={{ width: 12, height: 25, bgcolor: '#10b981', alignSelf: 'flex-end', borderRadius: '2px 2px 0 0' }} />
-                <Box sx={{ width: 12, height: 35, bgcolor: '#10b981', alignSelf: 'flex-end', borderRadius: '2px 2px 0 0' }} />
+              <Box sx={{ width: '100%', height: 40, mt: 1.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', height: 8, background: 'rgba(255, 69, 69, 0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+                  <Box sx={{ width: `${students.length ? (todayAbsent / students.length) * 100 : 0}%`, height: '100%', background: '#ff4545', borderRadius: '4px' }} />
+                </Box>
               </Box>
             </CardContent>
           </Card>
@@ -506,11 +508,22 @@ export default function StudentManagement({ state, setView }) {
                         </Button>
                         <Button
                           size="small"
+                          onClick={() => handleOpenDossier(s)}
+                          sx={{
+                            fontSize: '0.55rem', fontWeight: 900, py: 0.5, px: 1,
+                            background: '#F7931E', color: '#fff',
+                            '&:hover': { background: '#e68019' }
+                          }}
+                        >
+                          DOSSIER
+                        </Button>
+                        <Button
+                          size="small"
                           onClick={() => handleOpenEdit(s)}
                           sx={{
                             fontSize: '0.55rem', fontWeight: 900, py: 0.5, px: 1,
                             background: '#0B2E59', color: '#fff',
-                            '&:hover': { background: '#F7931E' }
+                            '&:hover': { background: '#0a2342' }
                           }}
                         >
                           EDIT
@@ -644,6 +657,99 @@ export default function StudentManagement({ state, setView }) {
         </DialogActions>
       </Dialog>
 
+      {/* DIALOG 3: VIEW DOSSIER (Analytics & Progress) */}
+      <Dialog 
+        open={openDossierDialog} 
+        onClose={() => setOpenDossierDialog(false)}
+        PaperProps={{ sx: { bgcolor: modalPaperBg, color: themeTextColor, borderRadius: '20px', width: '100%', maxWidth: '550px' } }}
+      >
+        <DialogTitle sx={{ fontWeight: 900, fontSize: '1.2rem', borderBottom: `1px solid ${themeBorderColor}`, pb: 2 }}>
+          📑 STUDENT DOSSIER
+        </DialogTitle>
+        <DialogContent sx={{ p: 3 }}>
+          {selectedStudent && (
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+                <Box sx={{ width: 60, height: 60, borderRadius: '30px', background: 'linear-gradient(135deg, #0B2E59 0%, #F7931E 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.5rem', fontWeight: 900 }}>
+                  {(selectedStudent.fullname || selectedStudent.email || '?')[0].toUpperCase()}
+                </Box>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 900, color: themeTextColor }}>{selectedStudent.fullname || 'Unknown'}</Typography>
+                  <Typography variant="caption" sx={{ color: themeTextSec, fontWeight: 700 }}>{selectedStudent.email}</Typography>
+                </Box>
+              </Box>
+
+              <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Grid item xs={6} sm={4}>
+                  <Typography variant="caption" sx={{ fontSize: '0.55rem', color: themeTextSec, fontWeight: 800 }}>USN</Typography>
+                  <Typography sx={{ fontWeight: 900, color: themeTextColor }}>{selectedStudent.usn || '-'}</Typography>
+                </Grid>
+                <Grid item xs={6} sm={4}>
+                  <Typography variant="caption" sx={{ fontSize: '0.55rem', color: themeTextSec, fontWeight: 800 }}>CGPA</Typography>
+                  <Typography sx={{ fontWeight: 900, color: themeTextColor }}>{selectedStudent.cgpa || selectedStudent.ug_marks || '-'}</Typography>
+                </Grid>
+                <Grid item xs={6} sm={4}>
+                  <Typography variant="caption" sx={{ fontSize: '0.55rem', color: themeTextSec, fontWeight: 800 }}>COLLEGE</Typography>
+                  <Typography sx={{ fontWeight: 900, color: themeTextColor }}>{selectedStudent.college || '-'}</Typography>
+                </Grid>
+              </Grid>
+
+              <Box sx={{ borderTop: `1px solid ${themeBorderColor}`, pt: 3, mb: 3 }}>
+                <Typography variant="caption" sx={{ fontSize: '0.65rem', color: themeTextSec, fontWeight: 900, letterSpacing: '1px', mb: 2, display: 'block' }}>
+                  ATTENDANCE ANALYTICS
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Card sx={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid #10b981', boxShadow: 'none' }}>
+                      <CardContent sx={{ p: 2, textAlign: 'center' }}>
+                        <Typography sx={{ color: '#10b981', fontWeight: 900, fontSize: '1.5rem' }}>
+                          {selectedStudent.attendance ? Object.values(selectedStudent.attendance).filter(Boolean).length : 0}
+                        </Typography>
+                        <Typography sx={{ fontSize: '0.6rem', color: '#10b981', fontWeight: 800 }}>TOTAL PRESENT</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Card sx={{ background: 'rgba(255, 69, 69, 0.05)', border: '1px solid #ff4545', boxShadow: 'none' }}>
+                      <CardContent sx={{ p: 2, textAlign: 'center' }}>
+                        <Typography sx={{ color: '#ff4545', fontWeight: 900, fontSize: '1.5rem' }}>
+                          {(() => {
+                             const totalPresent = selectedStudent.attendance ? Object.values(selectedStudent.attendance).filter(Boolean).length : 0;
+                             const allSessionDates = Object.keys(selectedStudent.attendance || {});
+                             return allSessionDates.length - totalPresent;
+                          })()}
+                        </Typography>
+                        <Typography sx={{ fontSize: '0.6rem', color: '#ff4545', fontWeight: 800 }}>TOTAL ABSENT</Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Box>
+
+              <Box sx={{ borderTop: `1px solid ${themeBorderColor}`, pt: 3 }}>
+                <Typography variant="caption" sx={{ fontSize: '0.65rem', color: themeTextSec, fontWeight: 900, letterSpacing: '1px', mb: 2, display: 'block' }}>
+                  ASSIGNED COURSES
+                </Typography>
+                {selectedStudent.assigned_courses && selectedStudent.assigned_courses.length > 0 ? (
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {selectedStudent.assigned_courses.map(c => (
+                      <Box key={c} sx={{ background: 'rgba(11, 46, 89, 0.05)', color: '#0B2E59', px: 2, py: 1, borderRadius: '20px', fontSize: '0.7rem', fontWeight: 900, border: '1px solid rgba(11, 46, 89, 0.2)' }}>
+                        {c}
+                      </Box>
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography variant="caption" sx={{ color: themeTextSec }}>No courses assigned yet.</Typography>
+                )}
+              </Box>
+
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2.5, borderTop: `1px solid ${themeBorderColor}` }}>
+          <Button onClick={() => setOpenDossierDialog(false)} variant="contained" sx={{ background: '#0B2E59', color: '#fff', fontSize: '0.65rem', fontWeight: 900 }}>CLOSE</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

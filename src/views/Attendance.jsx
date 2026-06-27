@@ -30,27 +30,23 @@ export default function Attendance({ state }) {
   const now = new Date();
   const todayStr = now.toISOString().split('T')[0];
 
-  const generateHeatmapData = () => {
-    const days = [];
-    const today = new Date();
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 364);
-    
-    for (let i = 0; i <= 364; i++) {
-      const d = new Date(startDate);
-      d.setDate(startDate.getDate() + i);
-      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      days.push({
-        date: d,
-        dateStr: dateStr,
-        present: myAttendance[dateStr] === true
-      });
-    }
-    return days;
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
-  
-  const heatmapDays = generateHeatmapData();
-  const totalPresentYear = heatmapDays.filter(d => d.present).length;
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  };
+
+  const monthLabel = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase();
+  const monthDays = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+  let presentInMonth = 0;
+  for(let i = 1; i <= monthDays; i++) {
+    const dStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+    if (myAttendance[dStr]) presentInMonth++;
+  }
 
   const isWindowActive = !!session.active;
   const alreadyMarked = myAttendance[todayStr] === true;
@@ -373,56 +369,52 @@ export default function Attendance({ state }) {
         </Box>
       )}
 
-      {/* 1-Year Attendance Heatmap */}
+      {/* Monthly Attendance Calendar */}
       <Card sx={{ background: 'rgba(11, 46, 89, 0.02)', border: '1px solid rgba(11, 46, 89, 0.08)', borderRadius: '20px', p: 3, boxShadow: 'none' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="caption" sx={{ fontSize: '0.65rem', fontWeight: 900, color: '#64748b', letterSpacing: '1px' }}>
-            ANNUAL ATTENDANCE MATRIX (365 DAYS)
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Typography variant="caption" sx={{ color: '#0B2E59', fontWeight: 900, fontSize: '0.6rem' }}>
-              TOTAL PRESENT: <span style={{color: '#F7931E', fontSize: '0.75rem'}}>{totalPresentYear}</span>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Button onClick={handlePrevMonth} size="small" sx={{ minWidth: 'auto', p: 0.5, color: '#0B2E59', background: 'rgba(11,46,89,0.05)', borderRadius: '8px' }}>
+              ◀
+            </Button>
+            <Typography variant="caption" sx={{ fontSize: '0.65rem', fontWeight: 900, color: '#64748b', letterSpacing: '1px', minWidth: '100px', textAlign: 'center' }}>
+              {monthLabel}
             </Typography>
+            <Button onClick={handleNextMonth} size="small" sx={{ minWidth: 'auto', p: 0.5, color: '#0B2E59', background: 'rgba(11,46,89,0.05)', borderRadius: '8px' }}>
+              ▶
+            </Button>
           </Box>
+          <Typography variant="caption" sx={{ color: '#0B2E59', fontWeight: 900, fontSize: '0.6rem' }}>
+            {presentInMonth} / {monthDays} DAYS
+          </Typography>
         </Box>
 
-        <Box sx={{ 
-          display: 'grid', 
-          gridTemplateRows: 'repeat(7, 1fr)', 
-          gridAutoFlow: 'column',
-          gap: '4px',
-          overflowX: 'auto',
-          pb: 1,
-          pt: 1
-        }}>
-          {heatmapDays.map((day, i) => {
-            const isToday = day.dateStr === todayStr;
+        <Grid container spacing={1}>
+          {Array.from({ length: monthDays }, (_, i) => {
+            const day = i + 1;
+            const dayFormatted = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const isPresent = myAttendance[dayFormatted] === true;
+            const isToday = dayFormatted === todayStr;
+
             return (
-              <Box 
-                key={i}
-                title={`${day.date.toDateString()} - ${day.present ? 'Present' : 'Absent'}`}
-                sx={{
-                  width: { xs: '10px', sm: '12px' },
-                  height: { xs: '10px', sm: '12px' },
-                  background: day.present ? '#F7931E' : isToday ? 'rgba(247, 147, 30, 0.3)' : 'rgba(11, 46, 89, 0.05)',
-                  border: isToday && !day.present ? '1px solid #F7931E' : 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  '&:hover': { transform: 'scale(1.3)', zIndex: 1, boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }
-                }}
-              />
-            )
+              <Grid item xs={1.714} key={day}>
+                <Box
+                  sx={{
+                    aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isPresent ? 'rgba(247, 147, 30, 0.08)' : 'rgba(11, 46, 89, 0.01)',
+                    border: '1px solid',
+                    borderColor: isToday ? '#0B2E59' : isPresent ? '#F7931E' : 'rgba(11, 46, 89, 0.06)',
+                    borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700,
+                    color: isPresent ? '#F7931E' : isToday ? '#0B2E59' : '#64748b',
+                    transition: 'all 0.2s',
+                    '&:hover': { transform: 'scale(1.1)', zIndex: 1, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }
+                  }}
+                >
+                  {day}
+                </Box>
+              </Grid>
+            );
           })}
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, color: '#64748b', fontSize: '0.55rem', fontWeight: 800 }}>
-          <Box>1 YEAR AGO</Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            Missed <Box sx={{ width: 10, height: 10, background: 'rgba(11, 46, 89, 0.05)', borderRadius: '2px' }}/>
-            <Box sx={{ width: 10, height: 10, background: '#F7931E', borderRadius: '2px' }}/> Present
-          </Box>
-          <Box>TODAY</Box>
-        </Box>
+        </Grid>
       </Card>
       
     </Box>
