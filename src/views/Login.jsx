@@ -6,7 +6,7 @@ import {
 
 export default function Login({ onLogin }) {
   const isApp = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.platform !== 'web';
-  const [mode, setMode] = useState(isApp ? 'login' : 'admin'); // 'login', 'signup', 'admin'
+  const [mode, setMode] = useState('login'); // 'login', 'signup', 'admin'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
@@ -220,32 +220,36 @@ export default function Login({ onLogin }) {
             </Button>
           </form>
 
-          <Box sx={{ textAlign: 'center', mt: 4, fontSize: '0.75rem', color: '#64748b' }}>
-            {isApp ? (
-              mode === 'login' ? (
-                <>
+          <Box sx={{ textAlign: 'center', mt: 4, fontSize: '0.75rem', color: '#64748b', display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {mode === 'login' ? (
+              <>
+                <Box>
                   New student?{' '}
-                  <Link 
-                    component="button" 
-                    onClick={() => setMode('signup')}
-                    sx={{ color: '#0B2E59', fontWeight: 900, textDecoration: 'none', borderBottom: '1px solid rgba(11,46,89,0.2)', pb: 0.2 }}
-                  >
+                  <Link component="button" onClick={() => setMode('signup')} sx={{ color: '#0B2E59', fontWeight: 900, textDecoration: 'none', borderBottom: '1px solid rgba(11,46,89,0.2)' }}>
                     Create Identity
                   </Link>
-                </>
-              ) : mode === 'signup' ? (
-                <>
-                  Already registered?{' '}
-                  <Link 
-                    component="button" 
-                    onClick={() => setMode('login')}
-                    sx={{ color: '#0B2E59', fontWeight: 900, textDecoration: 'none', borderBottom: '1px solid rgba(11,46,89,0.2)', pb: 0.2 }}
-                  >
-                    Sign In
+                </Box>
+                <Box>
+                  <Link component="button" onClick={() => setMode('admin')} sx={{ color: '#F7931E', fontWeight: 900, textDecoration: 'none' }}>
+                    Admin Access
                   </Link>
-                </>
-              ) : null
-            ) : null}
+                </Box>
+              </>
+            ) : mode === 'signup' ? (
+              <Box>
+                Already registered?{' '}
+                <Link component="button" onClick={() => setMode('login')} sx={{ color: '#0B2E59', fontWeight: 900, textDecoration: 'none', borderBottom: '1px solid rgba(11,46,89,0.2)' }}>
+                  Sign In
+                </Link>
+              </Box>
+            ) : (
+              <Box>
+                Student Access?{' '}
+                <Link component="button" onClick={() => setMode('login')} sx={{ color: '#0B2E59', fontWeight: 900, textDecoration: 'none', borderBottom: '1px solid rgba(11,46,89,0.2)' }}>
+                  Sign In Here
+                </Link>
+              </Box>
+            )}
           </Box>
         </CardContent>
       </Card>

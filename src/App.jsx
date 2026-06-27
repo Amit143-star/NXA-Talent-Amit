@@ -78,16 +78,7 @@ export default function App() {
       if (savedUser && savedUser !== 'undefined' && savedUser !== 'null') {
         const isApp = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.platform !== 'web';
         
-        // Segregation check: force logout invalid platform sessions
-        if (isApp && savedRole === 'admin') {
-          localStorage.removeItem('nxa_active_session');
-          localStorage.removeItem('nxa_active_role');
-          localStorage.removeItem('nxa_active_role_type');
-        } else if (!isApp && savedRole === 'student') {
-          localStorage.removeItem('nxa_active_session');
-          localStorage.removeItem('nxa_active_role');
-          localStorage.removeItem('nxa_active_role_type');
-        } else {
+        if (savedRole === 'admin' || savedRole === 'student') {
           setUser(JSON.parse(savedUser));
           setRole(savedRole);
           setRoleType(savedRoleType);
