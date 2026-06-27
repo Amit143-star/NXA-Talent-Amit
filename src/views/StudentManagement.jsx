@@ -308,7 +308,25 @@ export default function StudentManagement({ state, setView }) {
 
       {/* SVG Analytics Metric Grid */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ background: themeCardBg, border: `1px solid ${themeBorderColor}`, borderRadius: '20px', boxShadow: 'none' }}>
+            <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography variant="caption" sx={{ color: themeTextSec, fontWeight: 950, fontSize: '0.65rem', mb: 1, letterSpacing: '1px' }}>
+                TOTAL ENROLLED
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: themeTextColor }}>
+                {students.length}
+              </Typography>
+              <Box sx={{ width: '100%', height: 40, mt: 1.5, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 0.5 }}>
+                {Array.from({length: 12}).map((_, i) => (
+                  <Box key={i} sx={{ width: 4, height: Math.max(10, Math.sin(i * 0.5 + students.length) * 15 + 20), background: isDark ? '#F7931E' : '#0B2E59', borderRadius: '4px 4px 0 0', opacity: i % 2 === 0 ? 1 : 0.4 }} />
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ background: themeCardBg, border: `1px solid ${themeBorderColor}`, borderRadius: '20px', boxShadow: 'none' }}>
             <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="caption" sx={{ color: themeTextSec, fontWeight: 950, fontSize: '0.65rem', mb: 1, letterSpacing: '1px' }}>
@@ -328,7 +346,7 @@ export default function StudentManagement({ state, setView }) {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ background: themeCardBg, border: `1px solid ${themeBorderColor}`, borderRadius: '20px', boxShadow: 'none' }}>
             <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="caption" sx={{ color: themeTextSec, fontWeight: 950, fontSize: '0.65rem', mb: 1, letterSpacing: '1px' }}>
@@ -346,7 +364,7 @@ export default function StudentManagement({ state, setView }) {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ background: themeCardBg, border: `1px solid ${themeBorderColor}`, borderRadius: '20px', boxShadow: 'none' }}>
             <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography variant="caption" sx={{ color: themeTextSec, fontWeight: 950, fontSize: '0.65rem', mb: 1, letterSpacing: '1px' }}>
