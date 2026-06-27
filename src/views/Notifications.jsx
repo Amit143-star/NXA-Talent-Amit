@@ -3,7 +3,7 @@ import { Box, Typography, Card, CardContent, Button, TextField, Select, MenuItem
 import { syncPull } from '../utils/sync';
 
 export default function Notifications({ state }) {
-  const isAdmin = state.role === 'admin' && state.roleType === 'center';
+  const isAdmin = state.role === 'admin' && (state.roleType === 'center' || state.roleType === 'super');
   
   const [customAlerts, setCustomAlerts] = useState(() => {
     try { return JSON.parse(localStorage.getItem('nxa_system_alerts')) || []; } catch(e) { return []; }
@@ -66,16 +66,27 @@ export default function Notifications({ state }) {
     setBroadcastMsg('');
   };
 
+  const isDark = localStorage.getItem('nxa_dark_mode') === 'true';
+  const themeTextColor = isDark ? '#e2e8f0' : '#334155';
+  const themeHeaderColor = isDark ? '#f8fafc' : '#0B2E59';
+  const themeBorderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(11, 46, 89, 0.08)';
+
   const getAlertColor = (type) => {
     if (type === 'ALERT') return '#ff4545';
     if (type === 'FOUNDER') return '#F7931E';
-    return '#0B2E59'; // SYSTEM / SIGNAL
+    return isDark ? '#38bdf8' : '#0B2E59'; // SYSTEM / SIGNAL
   };
 
   const getAlertBg = (type) => {
-    if (type === 'ALERT') return 'rgba(255, 69, 69, 0.03)';
-    if (type === 'FOUNDER') return 'rgba(247, 147, 30, 0.03)';
-    return 'rgba(11, 46, 89, 0.01)';
+    if (isDark) {
+      if (type === 'ALERT') return 'rgba(255, 69, 69, 0.1)';
+      if (type === 'FOUNDER') return 'rgba(247, 147, 30, 0.1)';
+      return 'rgba(255, 255, 255, 0.03)';
+    } else {
+      if (type === 'ALERT') return 'rgba(255, 69, 69, 0.03)';
+      if (type === 'FOUNDER') return 'rgba(247, 147, 30, 0.03)';
+      return 'rgba(11, 46, 89, 0.01)';
+    }
   };
 
   return (
@@ -83,8 +94,8 @@ export default function Notifications({ state }) {
       
       {/* Admin Broadcast controls */}
       {isAdmin && (
-        <Card sx={{ background: 'rgba(11, 46, 89, 0.02)', border: '1px solid #0B2E59', borderRadius: '20px', p: 3, mb: 4, boxShadow: 'none' }}>
-          <Typography variant="caption" sx={{ fontSize: '0.7rem', color: '#0B2E59', fontWeight: 900, letterSpacing: '2px', display: 'block', mb: 2 }}>
+        <Card sx={{ background: isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(11, 46, 89, 0.02)', border: `1px solid ${isDark ? '#F7931E' : '#0B2E59'}`, borderRadius: '20px', p: 3, mb: 4, boxShadow: 'none' }}>
+          <Typography variant="caption" sx={{ fontSize: '0.7rem', color: isDark ? '#F7931E' : '#0B2E59', fontWeight: 900, letterSpacing: '2px', display: 'block', mb: 2 }}>
             📡 BROADCAST SIGNAL
           </Typography>
           <Box sx={{ display: 'grid', gap: 2 }}>
@@ -95,14 +106,30 @@ export default function Notifications({ state }) {
               placeholder="Type your message to all students..."
               value={broadcastMsg}
               onChange={(e) => setBroadcastMsg(e.target.value)}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px', background: '#ffffff', fontSize: '0.85rem' } }}
+              sx={{ 
+                '& .MuiOutlinedInput-root': { 
+                  borderRadius: '12px', 
+                  background: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff', 
+                  fontSize: '0.85rem',
+                  color: themeTextColor,
+                  '& fieldset': { borderColor: themeBorderColor }
+                } 
+              }}
             />
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
               <Select
                 value={broadcastType}
                 onChange={(e) => setBroadcastType(e.target.value)}
                 size="small"
-                sx={{ flex: 1, borderRadius: '10px', background: '#ffffff', fontSize: '0.75rem', color: '#0B2E59', fontWeight: 800 }}
+                sx={{ 
+                  flex: 1, 
+                  borderRadius: '10px', 
+                  background: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff', 
+                  fontSize: '0.75rem', 
+                  color: isDark ? '#F7931E' : '#0B2E59', 
+                  fontWeight: 800,
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: themeBorderColor }
+                }}
               >
                 <MenuItem value="SIGNAL" sx={{ fontSize: '0.75rem' }}>📢 SIGNAL</MenuItem>
                 <MenuItem value="ALERT" sx={{ fontSize: '0.75rem' }}>🚨 ALERT</MenuItem>
@@ -121,7 +148,7 @@ export default function Notifications({ state }) {
       )}
 
       {/* Title */}
-      <Typography variant="h5" sx={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: '#0B2E59', mb: 3, letterSpacing: '1px' }}>
+      <Typography variant="h5" sx={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, color: themeHeaderColor, mb: 3, letterSpacing: '1px' }}>
         SIGNAL_FEED
       </Typography>
 
@@ -131,7 +158,7 @@ export default function Notifications({ state }) {
           <Card 
             key={a.id || idx}
             sx={{
-              borderRadius: '16px', border: '1px solid rgba(11, 46, 89, 0.08)',
+              borderRadius: '16px', border: `1px solid ${themeBorderColor}`,
               background: getAlertBg(a.type), boxShadow: 'none', position: 'relative', overflow: 'hidden'
             }}
           >
@@ -141,11 +168,11 @@ export default function Notifications({ state }) {
                 <Typography variant="caption" sx={{ fontSize: '0.55rem', fontWeight: 900, color: getAlertColor(a.type), letterSpacing: '1.5px' }}>
                   [ {a.type} ]
                 </Typography>
-                <Typography variant="caption" sx={{ fontSize: '0.55rem', color: '#64748b' }}>
+                <Typography variant="caption" sx={{ fontSize: '0.55rem', color: isDark ? '#94a3b8' : '#64748b' }}>
                   {a.time || 'NOW'}
                 </Typography>
               </Box>
-              <Typography variant="body2" sx={{ color: '#334155', fontSize: '0.85rem', lineHeight: 1.5 }}>
+              <Typography variant="body2" sx={{ color: themeTextColor, fontSize: '0.85rem', lineHeight: 1.5 }}>
                 {a.msg}
               </Typography>
             </CardContent>
