@@ -22,9 +22,7 @@ jobs:
       - name: Manifest Dependencies
         run: |
           npm install
-          mkdir -p www
-          cp index.html app.js style.css hero.png www/
-          cp -r js css www/
+          npm run build
 
       - name: Synchronize Android Platform
         run: |

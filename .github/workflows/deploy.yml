@@ -19,13 +19,25 @@ jobs:
       - name: Checkout Manifest
         uses: actions/checkout@v4
       
+      - name: Setup Node Core
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web App
+        run: npm run build
+      
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'www'
           
       - name: Deploy to Live Matrix
         id: deployment

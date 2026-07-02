@@ -14,6 +14,7 @@ for (const interfaceName in networkInterfaces) {
 }
 
 export default defineConfig({
+  base: './',
   plugins: [react()],
   define: {
     __BACKEND_IP__: JSON.stringify(localIp)
