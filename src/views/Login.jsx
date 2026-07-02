@@ -194,19 +194,19 @@ export default function Login({ onLogin }) {
                 }
               }}
             >
-              {submitting ? 'PROCESSING...' : (mode === 'admin' ? 'SYSTEM ACCESS' : (mode === 'login' ? 'SIGN IN' : 'REGISTER ACCOUNT'))}
+            {submitting ? 'PROCESSING...' : (mode === 'login' ? 'SIGN IN' : 'REGISTER ACCOUNT')}
             </Button>
           </form>
 
           <Box sx={{ textAlign: 'center', mt: 4, fontSize: '0.75rem', color: '#64748b', display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {mode === 'login' && !isAdminPath ? (
+            {mode === 'login' ? (
               <Box>
                 New student?{' '}
                 <Link component="button" onClick={() => setMode('signup')} sx={{ color: '#0B2E59', fontWeight: 900, textDecoration: 'none', borderBottom: '1px solid rgba(11,46,89,0.2)' }}>
                   Create Identity
                 </Link>
               </Box>
-            ) : mode === 'signup' && !isAdminPath ? (
+            ) : mode === 'signup' ? (
               <Box>
                 Already registered?{' '}
                 <Link component="button" onClick={() => setMode('login')} sx={{ color: '#0B2E59', fontWeight: 900, textDecoration: 'none', borderBottom: '1px solid rgba(11,46,89,0.2)' }}>
