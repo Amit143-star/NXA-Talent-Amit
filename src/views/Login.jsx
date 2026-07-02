@@ -6,8 +6,7 @@ import {
 
 export default function Login({ onLogin }) {
   const isApp = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.platform !== 'web';
-  const isAdminPath = typeof window !== 'undefined' && window.location.pathname.toLowerCase().startsWith('/admin');
-  const [mode, setMode] = useState(isAdminPath ? 'admin' : 'login'); // 'login', 'signup', 'admin'
+  const [mode, setMode] = useState('login'); // 'login', 'signup' only
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
@@ -19,6 +18,14 @@ export default function Login({ onLogin }) {
     
     const emailRaw = email.trim();
     const emailKey = emailRaw.toLowerCase();
+    
+    // Reject admin login attempts on student portal
+    const adminEmails = ['nxasupertalent@gmail.com', 'nxamaxtalent@gmail.com', 'nxacentertalent@gmail.com'];
+    if (adminEmails.includes(emailKey)) {
+      alert("Admin access is restricted to the Admin Portal.");
+      setSubmitting(false);
+      return;
+    }
     
     try {
       if (mode === 'signup') {
@@ -67,36 +74,6 @@ export default function Login({ onLogin }) {
         
         alert("REGISTRATION COMPLETE: Core Account created.");
         onLogin(newUser, 'student');
-      } else if (mode === 'admin') {
-        // Admin Access Key Verification
-        const passkey = pass.trim();
-        const emailKeyVal = emailRaw.toLowerCase().trim();
-
-        // 1. Direct role verification
-        if (emailKeyVal === 'nxasupertalent@gmail.com' && passkey === 'NXA1426') {
-          onLogin({ name: 'Super Admin', email: emailRaw }, 'admin', 'super');
-          setSubmitting(false);
-          return;
-        } else if (emailKeyVal === 'nxamaxtalent@gmail.com' && passkey === 'NXA1526') {
-          onLogin({ name: 'Max Admin', email: emailRaw }, 'admin', 'max');
-          setSubmitting(false);
-          return;
-        } else if (emailKeyVal === 'nxacentertalent@gmail.com' && passkey === 'NXA1626') {
-          onLogin({ name: 'Center Admin', email: emailRaw }, 'admin', 'center');
-          setSubmitting(false);
-          return;
-        }
-
-        // 2. Fallback check for dynamically updated password settings
-        let adminRoles = {};
-        try { adminRoles = JSON.parse(localStorage.getItem('nxa_admin_roles')) || {}; } catch(e) { adminRoles = {}; }
-        const matchedAdmin = adminRoles[emailKeyVal];
-
-        if (matchedAdmin && matchedAdmin.pass === passkey) {
-          onLogin({ name: matchedAdmin.name || 'Admin', email: emailRaw }, 'admin', matchedAdmin.type);
-        } else {
-          alert("ACCESS KEY DENIED: Unauthorized Admin credentials.");
-        }
       } else {
         // Student Login
         let users = [];

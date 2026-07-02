@@ -78,10 +78,15 @@ export default function App() {
       if (savedUser && savedUser !== 'undefined' && savedUser !== 'null') {
         const isApp = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.platform !== 'web';
         
-        if (savedRole === 'admin' || savedRole === 'student') {
+        if (savedRole === 'student') {
           setUser(JSON.parse(savedUser));
-          setRole(savedRole);
-          setRoleType(savedRoleType);
+          setRole('student');
+          setRoleType(null);
+        } else if (savedRole === 'admin') {
+          // Clear admin session on student portal
+          localStorage.removeItem('nxa_active_session');
+          localStorage.removeItem('nxa_active_role');
+          localStorage.removeItem('nxa_active_role_type');
         }
       }
     } catch (e) {
@@ -205,18 +210,22 @@ export default function App() {
   }, []);
 
   const handleLogin = (userData, userRole, type = null) => {
+    if (userRole !== 'student') {
+      alert("Admin access is restricted to the Admin Portal.");
+      return;
+    }
     setUser(userData);
-    setRole(userRole);
-    setRoleType(type);
+    setRole('student');
+    setRoleType(null);
 
     localStorage.setItem('nxa_active_session', JSON.stringify(userData));
-    localStorage.setItem('nxa_active_role', userRole);
-    localStorage.setItem('nxa_active_role_type', type || '');
+    localStorage.setItem('nxa_active_role', 'student');
+    localStorage.setItem('nxa_active_role_type', '');
     setView('home');
 
     // Cookie fallback
     document.cookie = `nxa_active_session=${encodeURIComponent(JSON.stringify(userData))}; max-age=31536000; path=/; SameSite=Lax`;
-    document.cookie = `nxa_active_role=${encodeURIComponent(userRole)}; max-age=31536000; path=/; SameSite=Lax`;
+    document.cookie = `nxa_active_role=student; max-age=31536000; path=/; SameSite=Lax`;
   };
 
   const handleLogout = () => {
